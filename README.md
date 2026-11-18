@@ -1,8 +1,6 @@
 # 3b.CREATION FOR CHAT USING TCP SOCKETS
 ## AIM
 To write a python program for creating Chat using TCP Sockets Links.
-## Date: 12.02.2026
-## Roll.no: 212225230084
 ## ALGORITHM:
 1. Import the necessary modules in python
 2. Create a socket connection to using the socket module.
@@ -10,37 +8,71 @@ To write a python program for creating Chat using TCP Sockets Links.
  server
 4. Send and receive the message using the send function in socket.
 ## PROGRAM
-Server.py:
-```
+server.py
+```p
 import socket
-s=socket.socket()
-s.bind(('localhost',8000))
-s.listen(5)
-c,addr=s.accept()
-while True:
-    ClientMessage=c.recv(1024).decode()
-    print("Client > ",ClientMessage)
-    msg=input("Server > ")
-    c.send(msg.encode())
-```
 
-Client.py:
-```
-import socket
-s=socket.socket()
-s.connect(('localhost',8000))
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+host = '127.0.0.1'
+port = 5000
+server_socket.bind((host, port))
+
+server_socket.listen(1)
+print("Waiting for client connection...")
+
+client_socket, addr = server_socket.accept()
+print("Connected to:", addr)
+
 while True:
-    msg=input("Client > ")
-    s.send(msg.encode())
-    print("Server > ",s.recv(1024).decode())
+    client_message = client_socket.recv(1024).decode()
+    print("Client:", client_message)
+
+    if client_message.lower() == "bye":
+        break
+
+    message = input("Server: ")
+    client_socket.send(message.encode())
+
+    if message.lower() == "bye":
+        break
+
+client_socket.close()
+server_socket.close()
+```
+client.py
+```p
+import socket
+
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+host = '127.0.0.1'
+port = 5000
+
+client_socket.connect((host, port))
+print("Connected to server")
+
+while True:
+    message = input("Client: ")
+    client_socket.send(message.encode())
+
+    if message.lower() == "bye":
+        break
+
+    server_message = client_socket.recv(1024).decode()
+    print("Server:", server_message)
+
+    if server_message.lower() == "bye":
+        break
+
+client_socket.close()
 ```
 ## OUPUT
+## server
+<img width="1920" height="1080" alt="Screenshot (469)" src="https://github.com/user-attachments/assets/69c686f5-c34d-4a0d-ab2c-de3d76999671" />
 
-Server.py:
-<img width="1189" height="238" alt="image" src="https://github.com/user-attachments/assets/f3abea53-af3e-43ca-86c0-07f31bbefd31" />
-
-Client.py:
-<img width="1108" height="294" alt="image" src="https://github.com/user-attachments/assets/8bbd2d69-a11e-4c6f-b381-a07fce747a43" />
+## client
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ba4032ce-139e-4500-afd9-25202e62f46c" />
 
 
 ## RESULT
